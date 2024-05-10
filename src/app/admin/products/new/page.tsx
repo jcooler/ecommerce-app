@@ -6,12 +6,7 @@ export default function newProductPage() {
   return (
     <>
     <PageHeader>Add Product</PageHeader>
-    <ProductForm
-    
-    
-    
-    
-    />
+    <ProductForm/>
       
     
     </>
