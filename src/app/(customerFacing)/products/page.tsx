@@ -1,9 +1,10 @@
 import { ProductCard, ProductCardSkeleton } from "@/components/ProductCard";
 import db from "@/db/db";
 import { Suspense } from "react";
+import { Product } from "@prisma/client";
 
-function getProducts() {
-  db.product.findMany({
+async function getProducts() {
+  return await db.product.findMany({
     where: {
       isAvailable: true,
     },
