@@ -1,12 +1,14 @@
 import { ProductCard, ProductCardSkeleton } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import db from "@/db/db";
+import { cache } from "@/lib/cache";
 import { Product } from "@prisma/client";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
-function getMostPopularProducts() {
+const getMostPopularProducts = cache(
+  () => {
   return db.product.findMany({
     where: {
       isAvailable: true,
@@ -18,9 +20,13 @@ function getMostPopularProducts() {
     },
     take: 6,
   });
-}
+},
+["/", "getMostPopularProducts"],
+{revalidate: 60 * 60 * 24}
+);
 
-function getNewestProducts() {
+const getNewestProducts = cache(
+  () => {
   return db.product.findMany({
     where: {
       isAvailable: true,
@@ -30,7 +36,9 @@ function getNewestProducts() {
     },
     take: 6,
   });
-}
+},
+["/", "getNewestProducts"],
+);
 
 export default function HomePage() {
   return (

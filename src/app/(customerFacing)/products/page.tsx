@@ -2,9 +2,10 @@ import { ProductCard, ProductCardSkeleton } from "@/components/ProductCard";
 import db from "@/db/db";
 import { Suspense } from "react";
 import { Product } from "@prisma/client";
+import { cache } from "@/lib/cache";
 
-async function getProducts() {
-  return await db.product.findMany({
+const getProducts = cache(() => {
+  return db.product.findMany({
     where: {
       isAvailable: true,
     },
@@ -12,7 +13,7 @@ async function getProducts() {
       name: "asc",
     },
   });
-}
+}, ["/products", "getProducts"]);
 
 export default function ProductsPage() {
   return (
@@ -37,12 +38,10 @@ export default function ProductsPage() {
 async function ProductsSuspense() {
   const products = await getProducts();
 
-  return (
-    products.map((product: Product) => (
-      <ProductCard
-        key={product.id}
-        {...product}
-      />
-    ))
-  );
+  return products.map((product: Product) => (
+    <ProductCard
+      key={product.id}
+      {...product}
+    />
+  ));
 }
